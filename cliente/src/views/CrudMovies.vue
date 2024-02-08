@@ -28,7 +28,7 @@
 
         <b-modal
           v-model="modalShow"
-          title="Título del Modal"
+          title="Agregar Película"
           id="modal-prevent-closing"
           ref="modal"
           @show="resetModal"
