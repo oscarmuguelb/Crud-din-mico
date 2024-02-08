@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <b-button @click="modalShow = !modalShow" variant="primary">Agregar</b-button>
     <div class="card-container">
       <b-card
         v-for="movie in items"
@@ -24,8 +25,6 @@
     </div>
     <div class="modal-container">
       <div class="modal-content">
-        <b-button @click="modalShow = !modalShow">Agregar</b-button>
-
         <b-modal
           v-model="modalShow"
           title="Agregar Película"
