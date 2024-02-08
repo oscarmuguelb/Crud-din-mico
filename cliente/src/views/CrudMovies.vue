@@ -13,8 +13,12 @@
         <b-card-text>{{ movie.duration }}</b-card-text>
         <b-card-text>{{ movie.genre }}</b-card-text>
         <div class="optionsCont">
-          <b-button class="optionsCards" variant="warning">Editar</b-button>
-          <b-button class="optionsCards" variant="danger">Borrar</b-button>
+          <b-button class="optionsCards" variant="warning">
+            <b-icon icon="pencil-fill"></b-icon>
+          </b-button>
+          <b-button class="optionsCards" variant="danger">
+            <b-icon icon="trash-fill"></b-icon>
+          </b-button>
         </div>
       </b-card>
     </div>
@@ -152,9 +156,13 @@ export default {
   justify-content: center;
   background-color: antiquewhite;
 }
-.optionsCont{
-    flex-direction: row;
-    display: flex;
+.optionsCont {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px;
+  
 }
 .card-container {
   display: flex;
@@ -168,6 +176,7 @@ export default {
   width: 200px;
 }
 .optionsCards {
+
   margin: 10px;
 }
 .modal-container {
