@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-  
     <div class="card-container">
       <b-card
         v-for="movie in items"
@@ -27,35 +26,55 @@
       <div class="modal-content">
         <b-button @click="modalShow = !modalShow">Agregar</b-button>
 
-        <b-modal v-model="modalShow" title="Título del Modal">
-          <form>
-            <div class="form-group">
-              <label for="name">Nombre</label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
+        <b-modal
+          v-model="modalShow"
+          title="Título del Modal"
+          id="modal-prevent-closing"
+          ref="modal"
+          @show="resetModal"
+          @hidden="resetModal"
+          @ok="handleOk"
+        >
+          <form ref="form" @submit.stop.prevent="handleSubmit">
+            <b-form-group
+              label="Nombre"
+              label-for="name-input"
+              invalid-feedback="El nombre es requerido"
+              :state="nameState"
+            >
+              <b-form-input
+                id="name-input"
                 v-model="movie.name"
-              />
-            </div>
-            <div class="form-group">
-              <label for="director">Director</label>
-              <input
-                type="text"
-                class="form-control"
-                id="director"
+                :state="nameState"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              label="Director"
+              label-for="director-input"
+              invalid-feedback="El director es requerido"
+              :state="directorState"
+            >
+              <b-form-input
+                id="director-input"
                 v-model="movie.director"
-              />
-            </div>
-            <div class="form-group">
-              <label for="duration">Duración</label>
-              <input
-                type="text"
-                class="form-control"
-                id="duration"
+                :state="directorState"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              label="Duración"
+              label-for="duration-input"
+              invalid-feedback="La duración es requerida"
+              :state="durationState"
+            >
+              <b-form-input
+                id="duration-input"
                 v-model="movie.duration"
-              />
-            </div>
+                :state="durationState"
+                required
+              ></b-form-input>
+            </b-form-group>
             <div class="form-group">
               <label for="genre">Género</label>
               <select class="form-control" id="genre" v-model="movie.genre">
@@ -143,7 +162,51 @@ export default {
         { id: 3, name: "Drama" },
         { id: 4, name: "Thriller" },
       ],
+      name: "",
+      nameState: null,
+      directorState: null,
+      durationState: null,
+      genreState: null,
+      submittedNames: [],
     };
+  },
+  methods: {
+    checkFormValidity() {
+      const valid = this.$refs.form.checkValidity();
+      this.nameState = valid;
+      this.directorState = valid;
+      this.durationState = valid;
+      this.genreState = valid;
+      return valid;
+    },
+    resetModal() {
+      this.movie.name = "";
+      this.movie.director = "";
+      this.movie.duration = "";
+      this.movie.genre = "";
+      this.nameState = null;
+      this.directorState = null;
+      this.durationState = null;
+      this.genreState = null;
+    },
+    handleOk(bvModalEvent) {
+      // Prevent modal from closing
+      bvModalEvent.preventDefault();
+      // Trigger submit handler
+      this.handleSubmit();
+    },
+    handleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return;
+      }
+      // Push the name to submitted names
+      this.submittedNames.push(this.movie.name);
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide("modal-prevent-closing");
+      });
+    },
   },
 };
 </script>
@@ -164,7 +227,6 @@ export default {
   justify-content: space-around;
   align-items: center;
   margin: 10px;
-
 }
 .card-container {
   display: flex;
@@ -178,7 +240,6 @@ export default {
   width: 200px;
 }
 .optionsCards {
-
   margin: 10px;
 }
 .modal-container {
