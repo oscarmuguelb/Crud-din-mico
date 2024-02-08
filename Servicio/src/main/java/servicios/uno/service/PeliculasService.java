@@ -40,5 +40,11 @@ public class PeliculasService {
         return new Response<>(this.repository.save(pelicula), false, 200, "Correcto");
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public Response<Pelicula> delete(Long id) throws SQLException {
+        this.repository.deleteById(id);
+        return new Response<>(null, false, 200, "Correcto");
+    }
+
 
 }

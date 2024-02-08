@@ -22,15 +22,15 @@ const savePelicula = async (pelicula) => {
     }
     const updatePelicula = async (pelicula) => {
         try {
-            const response = await axios.put(`${API_URL}${pelicula.id}`, pelicula);
+            const response = await axios.put(`${API_URL}`, pelicula);
             return response.data;
         } catch (error) {
             throw error;
         }
     }
-    const deletePelicula = async (pelicula) => {
+    const deletePelicula = async (id) => {
         try {
-            const response = await axios.delete(`${API_URL}${pelicula.id}`);
+            const response = await axios.delete(`${API_URL}/${id}`);
             return response.data;
         } catch (error) {
             throw error;

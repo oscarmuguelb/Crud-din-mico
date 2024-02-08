@@ -34,5 +34,15 @@ public class PeliculaCtrl {
     public Response<Pelicula> save(@RequestBody Pelicula pelicula) throws SQLException {
         return service.save(pelicula);
     }
+
+    @PutMapping
+    public Response<Pelicula> update(@RequestBody Pelicula pelicula) throws SQLException {
+        return service.update(pelicula);
+    }
+
+    @DeleteMapping("/{id}")
+    public Response<Pelicula> delete(@PathVariable Long id) throws SQLException {
+        return service.delete(id);
+    }
 }
 
