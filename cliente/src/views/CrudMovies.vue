@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+  
     <div class="card-container">
       <b-card
         v-for="movie in items"
@@ -58,6 +59,7 @@
             <div class="form-group">
               <label for="genre">Género</label>
               <select class="form-control" id="genre" v-model="movie.genre">
+                <option disabled value="">Selecciona un género</option>
                 <option
                   v-for="genre in genres"
                   :key="genre.id"
@@ -162,7 +164,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   margin: 10px;
-  
+
 }
 .card-container {
   display: flex;
