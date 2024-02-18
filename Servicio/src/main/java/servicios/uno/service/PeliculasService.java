@@ -26,8 +26,16 @@ public class PeliculasService {
     }
 
     @Transactional(readOnly = true)
-    public Response<List<Pelicula>> findByAllFieldsContaining(String query) throws SQLException {
-        return new Response<>(this.repository.findByAllFieldsContaining(query), false, 200, "Correcto");
+    public Response<List<Pelicula>> getByDirectorAndCreadaEnBetween(String director, String fechaInicio, String fechaFin) throws SQLException {
+        if (director != null && fechaInicio != null && fechaFin != null) {
+            return new Response<>(this.repository.findByDirectorAndCreadaEnBetween(director, fechaInicio, fechaFin), false, 200, "Correcto");
+        } else if (director != null) {
+            return new Response<>(this.repository.findByDirector(director), false, 200, "Correcto");
+        } else if (fechaInicio != null && fechaFin != null) {
+            return new Response<>(this.repository.findByCreadaEnBetween(fechaInicio, fechaFin), false, 200, "Correcto");
+        } else {
+            return new Response<>(null, true, 400, "Error");
+        }
     }
 
     @Transactional(rollbackFor = {SQLException.class})

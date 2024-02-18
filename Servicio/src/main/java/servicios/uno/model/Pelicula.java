@@ -26,6 +26,9 @@ public class Pelicula{
     @Column(nullable = false)
     long duracion;
 
+    @Column(nullable = false , name = "creada_en" ,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    String creadaEn;
+
     @ManyToOne
     @JoinColumn(name = "fk_genero")
     private Genero genero;
