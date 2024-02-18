@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container" >
     <div class="loading-overlay is-active" v-if="isLoading">
       <b-spinner class="spiner"></b-spinner>
     </div>
     <h1>Películas</h1>
     <div>
-      <b-form @submit.prevent="obtenerPeliculasFiltradas">
+      <b-form v-show="showElement" @submit.prevent="obtenerPeliculasFiltradas">
         <b-form-group label="Director">
           <b-form-input
             type="text"
@@ -58,11 +58,15 @@
     >
     <div class="card-container">
       <b-card
-        v-for="movie in items"
+        v-for="(movie, index) in items"
         :key="movie.nombre"
         class="movie-card"
         bg-variant="dark"
         text-variant="white"
+        draggable="true"
+        @dragstart="dragStart(index)"
+        @dragover.prevent
+        @drop="drop(index)"
       >
         <b-card-title>{{ movie.nombre }}</b-card-title>
         <b-card-text>{{ movie.director }}</b-card-text>
@@ -191,9 +195,30 @@ export default {
       nombreState: null,
       directorState: null,
       generoState: null,
+      dragSource: null,
+      showElement: true,
+      lastScrollPosition: 0,
+   
     };
   },
   methods: {
+    onScroll() {
+      const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      if (Math.abs(currentScrollPosition - this.lastScrollPosition) < 300) {
+        return;
+      }
+      this.showElement = currentScrollPosition < this.lastScrollPosition;
+      this.lastScrollPosition = currentScrollPosition;
+    },
+    dragStart(index) {
+      this.dragSource = index;
+    },
+    drop(index) {
+      const draggedMovie = this.items[this.dragSource];
+      this.items.splice(this.dragSource, 1);
+      this.items.splice(index, 0, draggedMovie);
+      this.dragSource = null;
+    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.nombreState = valid;
@@ -276,6 +301,7 @@ export default {
       }
     },
 
+
     handleShowEdit(movie) {
       console.log(movie);
       this.movie = { ...movie };
@@ -304,14 +330,16 @@ export default {
   },
   async mounted() {
     await this.getData();
+   window.addEventListener("scroll", this.onScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.onScroll);
   },
 };
 </script>
 
 <style scoped>
 .container {
-  width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -336,7 +364,34 @@ export default {
 
 .movie-card {
   margin: 10px;
-  width: 200px;
+  min-width: 200px; /* Ajusta este valor según tus necesidades */
+  max-width: 300px; /* Ajusta este valor según tus necesidades */
+  flex: 1 1 auto;
+  width: 100%; /* en móviles */
+}
+
+@media (min-width: 576px) { /* en pantallas pequeñas (sm) */
+  .movie-card {
+    width: 48%;
+  }
+}
+
+@media (min-width: 768px) { /* en pantallas medianas (md) */
+  .movie-card {
+    width: 32%;
+  }
+}
+
+@media (min-width: 992px) { /* en pantallas grandes (lg) */
+  .movie-card {
+    width: 24%;
+  }
+}
+
+@media (min-width: 1200px) { /* en pantallas extra grandes (xl) */
+  .movie-card {
+    width: 19%;
+  }
 }
 
 .optionsCards {
