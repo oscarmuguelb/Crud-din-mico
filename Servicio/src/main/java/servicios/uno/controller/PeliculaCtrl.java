@@ -30,6 +30,12 @@ public class PeliculaCtrl {
         return service.getById(id);
     }
 
+    @PostMapping("/query")
+    public Response<List<Pelicula>> queryMethod(@RequestBody QueryDto queryDto) throws SQLException {
+        return service.queryMethod(queryDto.getDirector(), queryDto.getFechaInicio(), queryDto.getFechaFin(), queryDto.getGenero());
+    }
+
+
     @PostMapping
     public Response<Pelicula> save(@RequestBody Pelicula pelicula) throws SQLException {
         return service.save(pelicula);

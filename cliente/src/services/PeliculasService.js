@@ -37,10 +37,22 @@ const savePelicula = async (pelicula) => {
         }
     }
 
+ //director, fechaInicio, fechaFin, genero -
+
+  async function obtenerPeliculasFiltradas(query) {
+    try {
+        const response = await axios.post(`${API_URL}/query`, query);
+        return response.data.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 export  {
    obtenerPeliculas,
     savePelicula,
     updatePelicula,
-    deletePelicula
+    deletePelicula,
+    obtenerPeliculasFiltradas
 };

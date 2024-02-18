@@ -3,6 +3,7 @@ package servicios.uno.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import servicios.uno.model.Genero;
 import servicios.uno.model.Pelicula;
 import servicios.uno.repository.PeliculasRepository;
 import servicios.uno.utils.Response;
@@ -17,7 +18,7 @@ public class PeliculasService {
     private PeliculasRepository repository;
     @Transactional(readOnly = true)
     public Response<List<Pelicula>> getAll() throws SQLException {
-        return new Response<>(this.repository.findAll(), false, 200, "Correcto");
+        return new Response<>(this.repository.findAllByOrderByCreadaEnDesc(), false, 200, "Correcto");
     }
 
     @Transactional(readOnly = true)
@@ -26,15 +27,23 @@ public class PeliculasService {
     }
 
     @Transactional(readOnly = true)
-    public Response<List<Pelicula>> getByDirectorAndCreadaEnBetween(String director, String fechaInicio, String fechaFin) throws SQLException {
-        if (director != null && fechaInicio != null && fechaFin != null) {
-            return new Response<>(this.repository.findByDirectorAndCreadaEnBetween(director, fechaInicio, fechaFin), false, 200, "Correcto");
+    public Response<List<Pelicula>> queryMethod(String director, String fechaInicio, String fechaFin, Genero genero) throws SQLException {
+        if (genero != null && director != null && fechaInicio != null && fechaFin != null) {
+            return new Response<>(this.repository.findByDirectorContainsAndCreadaEnBetweenAndGeneroOrderByCreadaEnDesc(director, fechaInicio, fechaFin, genero), false, 200, "Correcto");
+        } else if (genero != null && director != null) {
+            return new Response<>(this.repository.findByDirectorContainsAndGeneroOrderByCreadaEnDesc(director, genero), false, 200, "Correcto");
+        } else if (genero != null && fechaInicio != null && fechaFin != null) {
+            return new Response<>(this.repository.findByCreadaEnBetweenAndGeneroOrderByCreadaEnDesc(fechaInicio, fechaFin, genero), false, 200, "Correcto");
+        } else if (director != null && fechaInicio != null && fechaFin != null) {
+            return new Response<>(this.repository.findByDirectorContainsAndCreadaEnBetweenOrderByCreadaEnDesc(director, fechaInicio, fechaFin), false, 200, "Correcto");
+        } else if (genero != null) {
+            return new Response<>(this.repository.findByGeneroOrderByCreadaEnDesc(genero), false, 200, "Correcto");
         } else if (director != null) {
-            return new Response<>(this.repository.findByDirector(director), false, 200, "Correcto");
+            return new Response<>(this.repository.findByDirectorContainsOrderByCreadaEnDesc(director), false, 200, "Correcto");
         } else if (fechaInicio != null && fechaFin != null) {
-            return new Response<>(this.repository.findByCreadaEnBetween(fechaInicio, fechaFin), false, 200, "Correcto");
+            return new Response<>(this.repository.findByCreadaEnBetweenOrderByCreadaEnDesc(fechaInicio, fechaFin), false, 200, "Correcto");
         } else {
-            return new Response<>(null, true, 400, "Error");
+            return new Response<>(this.repository.findAll(), false, 200, "Correcto");
         }
     }
 
@@ -55,4 +64,5 @@ public class PeliculasService {
     }
 
 
+    
 }

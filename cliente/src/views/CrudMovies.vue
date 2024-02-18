@@ -4,18 +4,83 @@
       <b-spinner class="spiner"></b-spinner>
     </div>
     <h1>Películas</h1>
-    <b-button @click="modalShow = !modalShow" variant="primary">Agregar</b-button>
+    <div>
+      <b-form @submit.prevent="obtenerPeliculasFiltradas">
+        <b-form-group label="Director">
+          <b-form-input
+            type="text"
+            v-model="query.director"
+            placeholder="Director"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group label="Fecha de inicio">
+          <b-form-input
+            type="date"
+            v-model="query.fechaInicio"
+            placeholder="Fecha de inicio"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group label="Fecha de fin">
+          <b-form-input
+            type="date"
+            v-model="query.fechaFin"
+            placeholder="Fecha de fin"
+          ></b-form-input>
+        </b-form-group>
+        <div class="form-group">
+          <label for="genero">Género</label>
+          <select class="form-control" id="genero" v-model="query.genero">
+            <option disabled value="">Selecciona un género</option>
+            <option
+              v-for="genero in generos"
+              :key="genero.id_genero"
+              :value="genero"
+            >
+              {{ genero.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <b-button type="submit" variant="primary" class="m-3">Buscar</b-button>
+        <b-button
+          type="reset"
+          variant="secondary"
+          class="m-3"
+          @click="resetForm"
+          >Limpiar</b-button
+        >
+      </b-form>
+    </div>
+    <b-button @click="modalShow = !modalShow" variant="primary"
+      >Agregar</b-button
+    >
     <div class="card-container">
-      <b-card v-for="movie in items" :key="movie.nombre" class="movie-card" bg-variant="dark" text-variant="white">
+      <b-card
+        v-for="movie in items"
+        :key="movie.nombre"
+        class="movie-card"
+        bg-variant="dark"
+        text-variant="white"
+      >
         <b-card-title>{{ movie.nombre }}</b-card-title>
         <b-card-text>{{ movie.director }}</b-card-text>
         <b-card-text>{{ movie.duracion }}</b-card-text>
         <b-card-text>{{ movie.genero.nombre }}</b-card-text>
         <div class="optionsCont">
-          <b-button class="optionsCards" variant="warning" @click="handleShowEdit(movie)">
+          <b-button
+            class="optionsCards"
+            variant="warning"
+            @click="handleShowEdit(movie)"
+          >
             <b-icon icon="pencil-fill"></b-icon>
           </b-button>
-          <b-button class="optionsCards" variant="danger" @click="handleDelete(movie.id_pelicula)">
+          <b-button
+            class="optionsCards"
+            variant="danger"
+            @click="handleDelete(movie.id_pelicula)"
+          >
             <b-icon icon="trash-fill"></b-icon>
           </b-button>
         </div>
@@ -23,26 +88,78 @@
     </div>
     <div class="modal-container">
       <div class="modal-content">
-        <b-modal v-model="modalShow" title="Datos de la pelicula" id="modal-prevent-closing" ref="modal" @show="resetModal" @hidden="resetModal" @ok="handleOk">
+        <b-modal
+          v-model="modalShow"
+          title="Datos de la pelicula"
+          id="modal-prevent-closing"
+          ref="modal"
+          @show="resetModal"
+          @hidden="resetModal"
+          @ok="handleOk"
+        >
           <form ref="form" @submit.stop.prevent="handleSubmit">
-            <b-form-group label="Nombre" label-for="nombre-input" invalid-feedback="El nombre es requerido" :state="nombreState">
-              <b-form-input id="nombre-input" v-model="movie.nombre" :state="nombreState" required></b-form-input>
+            <b-form-group
+              label="Nombre"
+              label-for="nombre-input"
+              invalid-feedback="El nombre es requerido"
+              :state="nombreState"
+            >
+              <b-form-input
+                id="nombre-input"
+                v-model="movie.nombre"
+                :state="nombreState"
+                required
+              ></b-form-input>
             </b-form-group>
-            <b-form-group label="Director" label-for="director-input" invalid-feedback="El director es requerido" :state="directorState">
-              <b-form-input id="director-input" v-model="movie.director" :state="directorState" required></b-form-input>
+            <b-form-group
+              label="Director"
+              label-for="director-input"
+              invalid-feedback="El director es requerido"
+              :state="directorState"
+            >
+              <b-form-input
+                id="director-input"
+                v-model="movie.director"
+                :state="directorState"
+                required
+              ></b-form-input>
             </b-form-group>
-            <b-form-group label="Duración" label-for="duracion-input" invalid-feedback="La duración es requerida" :state="duracionState">
-              <b-form-input id="duracion-input" v-model="movie.duracion" :state="duracionState" required  type="number" min="0"></b-form-input>
+            <b-form-group
+              label="Duración"
+              label-for="duracion-input"
+              invalid-feedback="La duración es requerida"
+              :state="duracionState"
+            >
+              <b-form-input
+                id="duracion-input"
+                v-model="movie.duracion"
+                :state="duracionState"
+                required
+                type="number"
+                min="0"
+              ></b-form-input>
             </b-form-group>
             <div class="form-group">
               <label for="genero">Género</label>
-              <select class="form-control" id="genero" v-model="movie.genero" required :state="generoState">
+              <select
+                class="form-control"
+                id="genero"
+                v-model="movie.genero"
+                required
+                :state="generoState"
+              >
                 <option disabled value="">Selecciona un género</option>
-                <option v-for="genero in generos" :key="genero.id_genero" :value="genero">
+                <option
+                  v-for="genero in generos"
+                  :key="genero.id_genero"
+                  :value="genero"
+                >
                   {{ genero.nombre }}
                 </option>
               </select>
-              <div v-if="!generoState" class="invalid-feedback">El género es requerido</div>
+              <div v-if="!generoState" class="invalid-feedback">
+                El género es requerido
+              </div>
             </div>
           </form>
         </b-modal>
@@ -52,118 +169,143 @@
 </template>
 
 <script>
-import { obtenerPeliculas, savePelicula, updatePelicula, deletePelicula } from '../services/PeliculasService'
+import {
+  obtenerPeliculas,
+  savePelicula,
+  updatePelicula,
+  deletePelicula,
+  obtenerPeliculasFiltradas,
+} from "../services/PeliculasService";
 
-import { obtenerGeneros } from '../services/GeneroService'
+import { obtenerGeneros } from "../services/GeneroService";
 export default {
   data() {
     return {
       isLoading: false,
       modalShow: false,
       movie: {},
+      query: {},
       items: [],
       generos: [],
       duracionState: null,
       nombreState: null,
       directorState: null,
       generoState: null,
-    }
+    };
   },
   methods: {
     checkFormValidity() {
-      const valid = this.$refs.form.checkValidity()
-      this.nombreState = valid
-      this.directorState = valid
-      this.duracionState = valid
-      this.generoState = valid
-      return valid
+      const valid = this.$refs.form.checkValidity();
+      this.nombreState = valid;
+      this.directorState = valid;
+      this.duracionState = valid;
+      this.generoState = valid;
+      return valid;
     },
     resetModal() {
       if (!this.movie.id_pelicula) {
-        this.movie.nombre = ''
-        this.movie.director = ''
-        this.movie.duracion = ''
-        this.movie.genero = ''
+        this.movie.nombre = "";
+        this.movie.director = "";
+        this.movie.duracion = "";
+        this.movie.genero = "";
       }
-      this.nombreState = null
-      this.directorState = null
-      this.duracionState = null
-      this.generoState = null
+      this.nombreState = null;
+      this.directorState = null;
+      this.duracionState = null;
+      this.generoState = null;
     },
 
     handleOk(bvModalEvent) {
-      bvModalEvent.preventDefault()
-      this.handleSubmit()
+      bvModalEvent.preventDefault();
+      this.handleSubmit();
+    },
+    async obtenerPeliculasFiltradas() {
+      try {
+        this.isLoading = true;
+        const response = await obtenerPeliculasFiltradas(this.query);
+        this.items = response;
+        this.isLoading = false;
+      } catch (error) {
+        console.error(error);
+        this.isLoading = false;
+      }
     },
     async handleSubmit() {
       try {
-        this.$refs.form.classList.add('was-validated')
+        this.$refs.form.classList.add("was-validated");
         if (!this.checkFormValidity()) {
-          return
+          return;
         }
-        this.isLoading = true
+        this.isLoading = true;
         if (this.movie.id_pelicula) {
-          await updatePelicula(this.movie)
-          this.movie = {}
+          await updatePelicula(this.movie);
+          this.movie = {};
         } else {
-          await savePelicula(this.movie)
+          await savePelicula(this.movie);
         }
 
-        this.getData()
+        this.getData();
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-prevent-closing')
-        })
-        this.isLoading = false
-        this.modalShow = false
-        alert('Película guardada correctamente')
+          this.$bvModal.hide("modal-prevent-closing");
+        });
+        this.isLoading = false;
+        this.modalShow = false;
+        alert("Película guardada correctamente");
       } catch (error) {
-        console.error(error)
-        this.isLoading = false
+        console.error(error);
+        this.isLoading = false;
         this.$nextTick(() => {
-          this.$bvModal.hide('modal-prevent-closing')
-        })
-        this.isLoading = false
-        this.modalShow = false
-        alert('Ocurrió un error al guardar la película')
+          this.$bvModal.hide("modal-prevent-closing");
+        });
+        this.isLoading = false;
+        this.modalShow = false;
+        alert("Ocurrió un error al guardar la película");
       }
     },
     async handleDelete(id) {
       try {
-        this.isLoading = true
-        await deletePelicula(id)
-        this.getData()
-        this.isLoading = false
-        alert('Película eliminada correctamente')
+        this.isLoading = true;
+        await deletePelicula(id);
+        this.getData();
+        this.isLoading = false;
+        alert("Película eliminada correctamente");
       } catch (error) {
-        console.error(error)
-        this.isLoading = false
-        alert('Ocurrió un error al eliminar la película')
+        console.error(error);
+        this.isLoading = false;
+        alert("Ocurrió un error al eliminar la película");
       }
     },
 
     handleShowEdit(movie) {
-      console.log(movie)
-      this.movie = { ...movie }
-      this.modalShow = true
+      console.log(movie);
+      this.movie = { ...movie };
+      this.modalShow = true;
+    },
+
+    resetForm() {
+      this.query = {};
+      this.getData();
     },
 
     async getData() {
       try {
-        this.isLoading = true
-        this.items = await obtenerPeliculas()
-        this.generos = await obtenerGeneros()
-        this.isLoading = false
+        this.isLoading = true;
+        this.items = await obtenerPeliculas();
+        this.generos = await obtenerGeneros();
+        this.isLoading = false;
       } catch (error) {
-        console.error(error)
-        this.isLoading = false
-        alert('Ocurrió un error al obtener las películas chance no hay conexión a internet')
+        console.error(error);
+        this.isLoading = false;
+        alert(
+          "Ocurrió un error al obtener las películas chance no hay conexión a internet"
+        );
       }
     },
   },
   async mounted() {
-    await this.getData()
+    await this.getData();
   },
-}
+};
 </script>
 
 <style scoped>

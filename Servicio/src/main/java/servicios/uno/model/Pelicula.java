@@ -26,7 +26,7 @@ public class Pelicula{
     @Column(nullable = false)
     long duracion;
 
-    @Column(nullable = false , name = "creada_en" ,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = true , name = "creada_en" ,columnDefinition = "DATE DEFAULT CURRENT_DATE")
     String creadaEn;
 
     @ManyToOne
